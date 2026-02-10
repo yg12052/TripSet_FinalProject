@@ -1,59 +1,125 @@
 package com.example.tripset
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
-import android.view.LayoutInflater
+import android.util.Patterns
 import android.view.View
-import android.view.ViewGroup
+import android.widget.TextView
+import android.widget.Toast
+import androidx.fragment.app.Fragment
+import com.google.android.material.button.MaterialButton
+import com.google.android.material.textfield.TextInputEditText
+import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.Timestamp
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+class SignUpFragment : Fragment(R.layout.fragment_sign_up) {
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SignUpFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
-class SignUpFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private val auth by lazy { FirebaseAuth.getInstance() }
+    private val db by lazy { FirebaseFirestore.getInstance() }
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
+        val tilEmail = view.findViewById<TextInputLayout>(R.id.tilEmail)
+        val tilPassword = view.findViewById<TextInputLayout>(R.id.tilPassword)
+        val tilConfirmPassword = view.findViewById<TextInputLayout>(R.id.tilConfirmPassword)
+
+        val etEmail = view.findViewById<TextInputEditText>(R.id.etEmail)
+        val etPassword = view.findViewById<TextInputEditText>(R.id.etPassword)
+        val etConfirmPassword = view.findViewById<TextInputEditText>(R.id.etConfirmPassword)
+
+        val btnSignup = view.findViewById<MaterialButton>(R.id.btnSignup)
+        val tvLogin = view.findViewById<TextView>(R.id.tvLogin)
+
+        fun clearErrors() {
+            tilEmail.error = null
+            tilPassword.error = null
+            tilConfirmPassword.error = null
         }
-    }
 
-    override fun onCreateView(
-        inflater: LayoutInflater, container: ViewGroup?,
-        savedInstanceState: Bundle?
-    ): View? {
-        // Inflate the layout for this fragment
-        return inflater.inflate(R.layout.fragment_sign_up, container, false)
-    }
+        fun setLoading(isLoading: Boolean) {
+            btnSignup.isEnabled = !isLoading
+            tvLogin.isEnabled = !isLoading
+        }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SignUpFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SignUpFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
+        btnSignup.setOnClickListener {
+            clearErrors()
+
+            val email = etEmail.text?.toString()?.trim().orEmpty()
+            val password = etPassword.text?.toString().orEmpty()
+            val confirmPassword = etConfirmPassword.text?.toString().orEmpty()
+
+            var ok = true
+
+            if (email.isBlank()) {
+                tilEmail.error = "Email is required"
+                ok = false
+            } else if (!Patterns.EMAIL_ADDRESS.matcher(email).matches()) {
+                tilEmail.error = "Invalid email format"
+                ok = false
             }
+
+            if (password.isBlank()) {
+                tilPassword.error = "Password is required"
+                ok = false
+            } else if (password.length < 6) {
+                tilPassword.error = "Password must be at least 6 characters"
+                ok = false
+            }
+
+            if (confirmPassword.isBlank()) {
+                tilConfirmPassword.error = "Confirm password is required"
+                ok = false
+            } else if (password.isNotBlank() && password != confirmPassword) {
+                tilConfirmPassword.error = "Passwords do not match"
+                ok = false
+            }
+
+            if (!ok) return@setOnClickListener
+
+            setLoading(true)
+
+            auth.createUserWithEmailAndPassword(email, password)
+                .addOnSuccessListener { result ->
+                    val uid = result.user?.uid
+                    if (uid.isNullOrBlank()) {
+                        setLoading(false)
+                        Toast.makeText(requireContext(), "Signup failed (uid missing)", Toast.LENGTH_SHORT).show()
+                        return@addOnSuccessListener
+                    }
+
+                    // Create user doc in Firestore (recommended for TripSet)
+                    val userDoc = hashMapOf(
+                        "email" to email,
+                        "createdAt" to Timestamp.now()
+                    )
+
+                    db.collection("users").document(uid)
+                        .set(userDoc)
+                        .addOnSuccessListener {
+                            setLoading(false)
+                            Toast.makeText(requireContext(), "Account created!", Toast.LENGTH_SHORT).show()
+
+                            parentFragmentManager.beginTransaction()
+                                .replace(R.id.fragmentContainer, TripsListFragment())
+                                .commit()
+                        }
+                        .addOnFailureListener { e ->
+                            setLoading(false)
+                            Toast.makeText(requireContext(), e.message ?: "Failed to save user", Toast.LENGTH_SHORT).show()
+                        }
+                }
+                .addOnFailureListener { e ->
+                    setLoading(false)
+                    Toast.makeText(requireContext(), e.message ?: "Signup failed", Toast.LENGTH_SHORT).show()
+                }
+        }
+
+        tvLogin.setOnClickListener {
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, LoginFragment())
+                .commit()
+        }
     }
 }

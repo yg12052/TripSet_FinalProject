@@ -31,7 +31,10 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             tilEmail.error = null
             tilPassword.error = null
         }
-
+        fun setLoading(isLoading: Boolean) {
+            btnLogin.isEnabled = !isLoading
+            tvSignUp.isEnabled = !isLoading
+        }
 
         btnLogin.setOnClickListener {
             clearErrors()
@@ -50,8 +53,11 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
             }
             if (!ok) return@setOnClickListener
 
+            setLoading(true)
+
             auth.signInWithEmailAndPassword(email, password)
                 .addOnSuccessListener {
+                    setLoading(false)
                     Toast.makeText(requireContext(), "Logged in!", Toast.LENGTH_SHORT).show()
 
                     parentFragmentManager.beginTransaction()
@@ -59,6 +65,7 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
                         .commit()
                 }
                 .addOnFailureListener { e ->
+                    setLoading(false)
                     Toast.makeText(
                         requireContext(),
                         e.message ?: "Login failed",
@@ -69,7 +76,9 @@ class LoginFragment : Fragment(R.layout.fragment_login) {
 
 
         tvSignUp.setOnClickListener {
-            Toast.makeText(requireContext(), "TODO: Sign up screen", Toast.LENGTH_SHORT).show()
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, SignUpFragment())
+                .commit()
         }
     }
 }
