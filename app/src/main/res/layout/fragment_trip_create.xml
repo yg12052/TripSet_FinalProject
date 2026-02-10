@@ -13,7 +13,6 @@
         android:background="@android:color/transparent"
         app:title="Create New Trip"
         app:titleTextAppearance="@style/TextAppearance.AppCompat.Medium"
-        app:navigationIcon="@android:drawable/ic_media_previous"
         app:layout_constraintTop_toTopOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />

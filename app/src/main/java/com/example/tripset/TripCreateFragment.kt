@@ -24,9 +24,7 @@ class TripCreateFragment : Fragment(R.layout.fragment_trip_create) {
         super.onViewCreated(view, savedInstanceState)
 
         val toolbar = view.findViewById<Toolbar?>(R.id.toolbarCreateTrip)
-        toolbar?.setNavigationOnClickListener {
-            parentFragmentManager.popBackStack()
-        }
+
 
         val etDestination = view.findViewById<TextInputEditText>(R.id.etDestination)
         val etStartDate = view.findViewById<TextInputEditText>(R.id.etStartDate)
