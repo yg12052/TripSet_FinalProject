@@ -2,11 +2,11 @@
 <androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
-    android:id="@+id/loginScroll"
+    android:id="@+id/signupScroll"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:fillViewport="true"
-    tools:context=".LoginFragment">
+    tools:context=".SignUpFragment">
 
     <LinearLayout
         android:layout_width="match_parent"
@@ -15,15 +15,14 @@
         android:gravity="center_horizontal"
         android:padding="24dp">
 
-        <ImageView
-            android:id="@+id/ivLogo"
-            android:layout_width="144dp"
-            android:layout_height="144dp"
-            android:layout_marginTop="24dp"
-            android:contentDescription="@string/app_name"
-            android:src="@drawable/tripset_icon"
-            android:scaleType="centerInside" />
-
+    <ImageView
+        android:id="@+id/ivLogo"
+        android:layout_width="144dp"
+        android:layout_height="144dp"
+        android:layout_marginTop="24dp"
+        android:contentDescription="@string/app_name"
+        android:src="@drawable/tripset_icon"
+        android:scaleType="centerInside" />
         <TextView
             android:id="@+id/tvTitle"
             android:layout_width="wrap_content"
@@ -44,6 +43,7 @@
             android:text="Prepare your trips with tasks, packing lists and documents"
             android:textSize="14sp"
             android:alpha="0.75" />
+
 
         <com.google.android.material.textfield.TextInputLayout
             android:id="@+id/tilEmail"
@@ -87,15 +87,36 @@
                 />
         </com.google.android.material.textfield.TextInputLayout>
 
+        <com.google.android.material.textfield.TextInputLayout
+            android:id="@+id/tilConfirmPassword"
+            style="@style/Widget.Material3.TextInputLayout.OutlinedBox"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="14dp"
+            android:hint="Confirm Password"
+            app:endIconMode="password_toggle"
+            app:boxCornerRadiusTopStart="12dp"
+            app:boxCornerRadiusTopEnd="12dp"
+            app:boxCornerRadiusBottomStart="12dp"
+            app:boxCornerRadiusBottomEnd="12dp">
+
+            <com.google.android.material.textfield.TextInputEditText
+                android:id="@+id/etConfirmPassword"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:inputType="textPassword"
+                android:singleLine="true"
+                />
+        </com.google.android.material.textfield.TextInputLayout>
+
         <com.google.android.material.button.MaterialButton
-            android:id="@+id/btnLogin"
+            android:id="@+id/btnSignup"
             android:layout_width="match_parent"
             android:layout_height="52dp"
             android:layout_marginTop="18dp"
-            android:text="Login"
+            android:text="Sign Up"
             app:cornerRadius="12dp"
             app:backgroundTint="#64B5F6"/>
-
         <LinearLayout
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
@@ -106,7 +127,7 @@
             <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Don't have an account? "
+                android:text="Already have an account? "
                 android:textSize="14sp"
                 android:alpha="0.8" />
 
@@ -114,7 +135,7 @@
                 android:id="@+id/tvSignUp"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="Sign up"
+                android:text="Login"
                 android:textSize="14sp"
                 android:textStyle="bold"
                 android:clickable="true"
@@ -126,6 +147,5 @@
         <Space
             android:layout_width="match_parent"
             android:layout_height="24dp" />
-
     </LinearLayout>
 </androidx.core.widget.NestedScrollView>
