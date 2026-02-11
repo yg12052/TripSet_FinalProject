@@ -9,7 +9,10 @@ import android.widget.TextView
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
-
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.Query
+import android.widget.Toast
 class TripsListFragment : Fragment() {
 
     override fun onCreateView(
@@ -27,24 +30,11 @@ class TripsListFragment : Fragment() {
         val rvTrips = view.findViewById<RecyclerView>(R.id.rvTrips)
 
         rvTrips.layoutManager = LinearLayoutManager(requireContext())
-        rvTrips.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+        val adapter = TripsAdapter()
+        rvTrips.adapter = adapter
+        loadTrips(adapter)
 
-            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
-                val v = LayoutInflater.from(parent.context)
-                    .inflate(R.layout.item_trip, parent, false)
-                return object : RecyclerView.ViewHolder(v) {}
-            }
 
-            override fun getItemCount(): Int = 5
-
-            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
-                val tvDestination = holder.itemView.findViewById<TextView>(R.id.tvDestination)
-                val tvDates = holder.itemView.findViewById<TextView>(R.id.tvDates)
-
-                tvDestination.text = "Trip #$position"
-                tvDates.text = "01/01/2026 - 07/01/2026"
-            }
-        }
 
         val fab = view.findViewById<FloatingActionButton>(R.id.fabAddTrip)
         fab.setOnClickListener {
@@ -55,4 +45,33 @@ class TripsListFragment : Fragment() {
         }
 
     }
+
+    private fun loadTrips(adapter: TripsAdapter) {
+
+        val uid = FirebaseAuth.getInstance().currentUser?.uid ?: return
+
+        FirebaseFirestore.getInstance()
+            .collection("trips")
+            .whereEqualTo("ownerUid", uid)
+            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .get()
+            .addOnSuccessListener { snapshot ->
+
+                val trips = snapshot.documents.map { doc ->
+                    Trip(
+                        id = doc.id,
+                        ownerUid = doc.getString("ownerUid") ?: "",
+                        destination = doc.getString("destination") ?: "",
+                        startDateMillis = doc.getLong("startDateMillis") ?: 0L,
+                        endDateMillis = doc.getLong("endDateMillis") ?: 0L
+                    )
+                }
+
+                adapter.submitList(trips)
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "Load failed: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+    }
+
 }
