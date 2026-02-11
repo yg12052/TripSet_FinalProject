@@ -50,11 +50,7 @@ class TripsAdapter(
                     FirebaseFirestore.getInstance()
                         .collection("trips")
                         .document(trip.id)
-                        .delete().addOnSuccessListener {
-                            if (context is Activity) {
-                                (context as Activity).recreate()
-                            }
-                        }
+                        .delete()
                 }
                 .setNegativeButton("Cancel", null)
                 .show()
