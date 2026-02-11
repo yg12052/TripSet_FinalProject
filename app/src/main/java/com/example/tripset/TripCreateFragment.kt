@@ -9,6 +9,9 @@ import androidx.appcompat.widget.Toolbar
 import com.google.android.material.button.MaterialButton
 import com.google.android.material.textfield.TextInputEditText
 import com.google.android.material.textfield.TextInputLayout
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.firestore.FirebaseFirestore
+import com.google.firebase.firestore.FieldValue
 import java.text.SimpleDateFormat
 import java.util.Calendar
 import java.util.Locale
@@ -86,16 +89,36 @@ class TripCreateFragment : Fragment(R.layout.fragment_trip_create) {
                 Toast.makeText(requireContext(), "Please choose end date", Toast.LENGTH_SHORT).show()
                 return@setOnClickListener
             }
-
-            Toast.makeText(
-                requireContext(),
-                "Saved: $destination\n${dateFormat.format(currentStart)} - ${dateFormat.format(currentEnd)}",
-                Toast.LENGTH_LONG
-            ).show()
-
-            parentFragmentManager.popBackStack()
+            /* TODO create trip in Firestore */
+            val db = FirebaseFirestore.getInstance()
+            val docRef = db.collection("trips").document()
+            val uid = FirebaseAuth.getInstance().currentUser?.uid
+            val trip = hashMapOf(
+                "ownerUid" to uid,
+                "destination" to destination,
+                "startDateMillis" to currentStart,
+                "endDateMillis" to currentEnd,
+                "createdAt" to com.google.firebase.firestore.FieldValue.serverTimestamp()
+            )
+            btnSave.isEnabled = false
+            docRef.set(trip)
+                .addOnSuccessListener {
+                    btnSave.isEnabled = true
+                    Toast.makeText(
+                        requireContext(),
+                        "Saved: $destination\n${dateFormat.format(currentStart)} - ${dateFormat.format(currentEnd)}",
+                        Toast.LENGTH_LONG
+                    ).show()
+                    parentFragmentManager.popBackStack()
+                }
+                .addOnFailureListener { e ->
+                    btnSave.isEnabled = true
+                    android.util.Log.e("TripCreate", "Save trip failed", e)
+                    Toast.makeText(requireContext(), "Failed: ${e.message}", Toast.LENGTH_LONG).show()
+                }
         }
     }
+
 
     private fun openDatePicker(
         minDateMillis: Long? = null,

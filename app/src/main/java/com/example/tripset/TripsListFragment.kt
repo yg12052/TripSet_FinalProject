@@ -5,6 +5,9 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.floatingactionbutton.FloatingActionButton
 
 class TripsListFragment : Fragment() {
@@ -21,6 +24,28 @@ class TripsListFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val rvTrips = view.findViewById<RecyclerView>(R.id.rvTrips)
+
+        rvTrips.layoutManager = LinearLayoutManager(requireContext())
+        rvTrips.adapter = object : RecyclerView.Adapter<RecyclerView.ViewHolder>() {
+
+            override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
+                val v = LayoutInflater.from(parent.context)
+                    .inflate(R.layout.item_trip, parent, false)
+                return object : RecyclerView.ViewHolder(v) {}
+            }
+
+            override fun getItemCount(): Int = 5
+
+            override fun onBindViewHolder(holder: RecyclerView.ViewHolder, position: Int) {
+                val tvDestination = holder.itemView.findViewById<TextView>(R.id.tvDestination)
+                val tvDates = holder.itemView.findViewById<TextView>(R.id.tvDates)
+
+                tvDestination.text = "Trip #$position"
+                tvDates.text = "01/01/2026 - 07/01/2026"
+            }
+        }
+
         val fab = view.findViewById<FloatingActionButton>(R.id.fabAddTrip)
         fab.setOnClickListener {
             parentFragmentManager.beginTransaction()
@@ -28,5 +53,6 @@ class TripsListFragment : Fragment() {
                 .addToBackStack(null)
                 .commit()
         }
+
     }
 }
