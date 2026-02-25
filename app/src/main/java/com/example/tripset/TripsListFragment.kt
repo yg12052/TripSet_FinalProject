@@ -32,7 +32,14 @@ class TripsListFragment : Fragment() {
 
         val rvTrips = view.findViewById<RecyclerView>(R.id.rvTrips)
 
-        adapter = TripsAdapter()
+        // ✅ שינוי יחיד: adapter עם callback ללחיצה על טיול
+        adapter = TripsAdapter(mutableListOf()) { trip ->
+            parentFragmentManager.beginTransaction()
+                .replace(R.id.fragmentContainer, EditTripFragment())
+                .addToBackStack(null)
+                .commit()
+        }
+
         rvTrips.layoutManager = LinearLayoutManager(requireContext())
         rvTrips.adapter = adapter
 

@@ -1,5 +1,5 @@
 package com.example.tripset
-import android.app.Activity
+
 import android.app.AlertDialog
 import android.view.LayoutInflater
 import android.view.View
@@ -11,9 +11,9 @@ import java.text.SimpleDateFormat
 import java.util.Date
 import java.util.Locale
 
-
 class TripsAdapter(
-    private val items: MutableList<Trip> = mutableListOf()
+    private val items: MutableList<Trip> = mutableListOf(),
+    private val onTripClick: (Trip) -> Unit   // 👈 הוספנו callback
 ) : RecyclerView.Adapter<TripsAdapter.TripViewHolder>() {
 
     class TripViewHolder(itemView: View) : RecyclerView.ViewHolder(itemView) {
@@ -39,6 +39,12 @@ class TripsAdapter(
         val end = df.format(Date(trip.endDateMillis))
         holder.tvDates.text = "$start - $end"
 
+        // 👇 לחיצה רגילה -> מעבר למסך
+        holder.itemView.setOnClickListener {
+            onTripClick(trip)
+        }
+
+        // 👇 לחיצה ארוכה -> מחיקה (נשאר כמו שהיה)
         holder.itemView.setOnLongClickListener {
 
             val context = holder.itemView.context
