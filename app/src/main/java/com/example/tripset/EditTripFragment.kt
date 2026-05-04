@@ -32,7 +32,7 @@ class EditTripFragment : Fragment(R.layout.fragment_edit_trip) {
         super.onCreate(savedInstanceState)
         tripId = arguments?.getString(ARG_TRIP_ID)
     }
-
+//t
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
