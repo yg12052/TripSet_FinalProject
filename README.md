@@ -54,5 +54,8 @@ The main focus was on:
 
 ---------------------------------------------------------------------------------------------------------------------------------
 
+Link to demo video:
+https://drive.google.com/file/d/1KvCcDI11UlIMHp7kizeefZ-2ko5y1LPX/view
+
 
 Made by Yuval Gendler
