@@ -5,7 +5,7 @@
     android:layout_height="match_parent"
     android:padding="20dp">
 
-    <!-- Header -->
+
     <androidx.appcompat.widget.Toolbar
         android:id="@+id/toolbarCreateTrip"
         android:layout_width="0dp"
@@ -17,7 +17,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Destination label -->
     <TextView
         android:id="@+id/tvDestinationLabel"
         android:layout_width="0dp"
@@ -29,7 +28,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Destination -->
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilDestination"
         android:layout_width="0dp"
@@ -57,7 +56,7 @@
             android:inputType="textCapWords" />
     </com.google.android.material.textfield.TextInputLayout>
 
-    <!-- Start Date label -->
+
     <TextView
         android:id="@+id/tvStartLabel"
         android:layout_width="0dp"
@@ -99,7 +98,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-    <!-- End Date label -->
+
     <TextView
         android:id="@+id/tvEndLabel"
         android:layout_width="0dp"
@@ -111,7 +110,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- End Date -->
+
     <com.google.android.material.textfield.TextInputLayout
         android:id="@+id/tilEndDate"
         android:layout_width="0dp"
@@ -143,7 +142,7 @@
     </com.google.android.material.textfield.TextInputLayout>
 
 
-    <!-- Save -->
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnSaveTrip"
         android:layout_width="0dp"
@@ -156,7 +155,7 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
 
-    <!-- Cancel -->
+
     <com.google.android.material.button.MaterialButton
         android:id="@+id/btnCancelTrip"
         android:layout_width="0dp"
