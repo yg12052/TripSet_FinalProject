@@ -3,65 +3,92 @@
     xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
-    android:layout_height="match_parent">
+    android:layout_height="match_parent"
+    android:background="#FFF7FF">
 
-    <!-- Top bar -->
+    <View
+        android:id="@+id/headerBackground"
+        android:layout_width="0dp"
+        android:layout_height="135dp"
+        android:background="#64B5F6"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintEnd_toEndOf="parent" />
+
     <ImageButton
         android:id="@+id/btnBack"
         android:layout_width="40dp"
         android:layout_height="40dp"
         android:layout_marginStart="12dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginTop="28dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:contentDescription="Back"
         android:src="@android:drawable/ic_media_previous"
+        app:tint="@android:color/white"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"/>
+
+    <ImageButton
+        android:id="@+id/btnShareTrip"
+        android:layout_width="40dp"
+        android:layout_height="40dp"
+        android:layout_marginEnd="12dp"
+        android:layout_marginTop="28dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:contentDescription="Share trip"
+        android:src="@android:drawable/ic_menu_share"
+        app:tint="@android:color/white"
+        app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintTop_toTopOf="parent"/>
 
     <TextView
         android:id="@+id/tvTripTitle"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="16dp"
-        android:layout_marginTop="10dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:layout_marginTop="31dp"
         android:text="Paris, France"
-        android:textSize="20sp"
+        android:textSize="22sp"
         android:textStyle="bold"
+        android:textColor="@android:color/white"
         app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toStartOf="@id/btnShareTrip"/>
 
     <TextView
         android:id="@+id/tvTripDates"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginStart="10dp"
-        android:layout_marginEnd="16dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
         android:text="Mar 15 – Mar 22, 2026"
-        android:textSize="12sp"
-        android:alpha="0.75"
+        android:textSize="13sp"
+        android:textColor="#EAF6FF"
         app:layout_constraintStart_toEndOf="@id/btnBack"
         app:layout_constraintTop_toBottomOf="@id/tvTripTitle"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toStartOf="@id/btnShareTrip"/>
 
     <com.google.android.material.tabs.TabLayout
         android:id="@+id/tabLayout"
         android:layout_width="0dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="10dp"
+        android:layout_height="48dp"
+        android:background="@android:color/white"
         app:tabMode="fixed"
         app:tabGravity="fill"
-        app:layout_constraintTop_toBottomOf="@id/tvTripDates"
+        app:tabIndicatorColor="#2196F3"
+        app:tabSelectedTextColor="#2196F3"
+        app:tabTextColor="#333333"
+        app:tabIndicatorHeight="3dp"
+        app:layout_constraintTop_toBottomOf="@id/headerBackground"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintEnd_toEndOf="parent"/>
 
-    <!-- Here we will swap tab fragments later -->
     <FrameLayout
         android:id="@+id/tabContainer"
         android:layout_width="0dp"
         android:layout_height="0dp"
-        android:layout_marginTop="6dp"
+        android:layout_marginTop="8dp"
         app:layout_constraintTop_toBottomOf="@id/tabLayout"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintStart_toStartOf="parent"

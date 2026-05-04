@@ -95,6 +95,7 @@ class TripCreateFragment : Fragment(R.layout.fragment_trip_create) {
             val uid = FirebaseAuth.getInstance().currentUser?.uid
             val trip = hashMapOf(
                 "ownerUid" to uid,
+                "members" to listOf(uid),
                 "destination" to destination,
                 "startDateMillis" to currentStart,
                 "endDateMillis" to currentEnd,

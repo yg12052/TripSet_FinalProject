@@ -1,12 +1,16 @@
 package com.example.tripset
 
+import android.app.AlertDialog
 import android.os.Bundle
+import android.text.InputType
 import android.view.View
+import android.widget.EditText
 import android.widget.ImageButton
 import android.widget.TextView
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
+import com.google.firebase.firestore.FieldValue
 import com.google.firebase.firestore.FirebaseFirestore
 import java.text.SimpleDateFormat
 import java.util.Date
@@ -32,7 +36,7 @@ class EditTripFragment : Fragment(R.layout.fragment_edit_trip) {
         super.onCreate(savedInstanceState)
         tripId = arguments?.getString(ARG_TRIP_ID)
     }
-//t
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -43,6 +47,7 @@ class EditTripFragment : Fragment(R.layout.fragment_edit_trip) {
         }
 
         setupBackButton(view)
+        setupShareButton(view)
         setupTabs()
         loadTripData(view)
     }
@@ -85,6 +90,64 @@ class EditTripFragment : Fragment(R.layout.fragment_edit_trip) {
             }
     }
 
+    private fun showShareTripDialog() {
+        val currentTripId = tripId ?: return
+
+        val input = EditText(requireContext())
+        input.hint = "User email"
+        input.inputType = InputType.TYPE_TEXT_VARIATION_EMAIL_ADDRESS
+
+        AlertDialog.Builder(requireContext())
+            .setTitle("Share trip")
+            .setMessage("Enter the email of the user you want to share this trip with.")
+            .setView(input)
+            .setPositiveButton("Share") { _, _ ->
+
+                val email = input.text.toString().trim()
+
+                if (email.isBlank()) {
+                    Toast.makeText(requireContext(), "Email is empty", Toast.LENGTH_SHORT).show()
+                    return@setPositiveButton
+                }
+
+                shareTripWithEmail(currentTripId, email)
+            }
+            .setNegativeButton("Cancel", null)
+            .show()
+    }
+
+    private fun shareTripWithEmail(currentTripId: String, email: String) {
+        val db = FirebaseFirestore.getInstance()
+
+        db.collection("users")
+            .whereEqualTo("email", email)
+            .limit(1)
+            .get()
+            .addOnSuccessListener { result ->
+
+                if (result.isEmpty) {
+                    Toast.makeText(requireContext(), "User not found", Toast.LENGTH_LONG).show()
+                    return@addOnSuccessListener
+                }
+
+                val userDoc = result.documents.first()
+                val userUid = userDoc.id
+
+                db.collection("trips")
+                    .document(currentTripId)
+                    .update("members", FieldValue.arrayUnion(userUid))
+                    .addOnSuccessListener {
+                        Toast.makeText(requireContext(), "Trip shared with $email", Toast.LENGTH_LONG).show()
+                    }
+                    .addOnFailureListener { e ->
+                        Toast.makeText(requireContext(), "Share failed: ${e.message}", Toast.LENGTH_LONG).show()
+                    }
+            }
+            .addOnFailureListener { e ->
+                Toast.makeText(requireContext(), "User search failed: ${e.message}", Toast.LENGTH_LONG).show()
+            }
+    }
+
     private fun setupTabs() {
         val currentTripId = tripId ?: return
 
@@ -105,7 +168,7 @@ class EditTripFragment : Fragment(R.layout.fragment_edit_trip) {
                 val fragment = when (tab?.position) {
                     0 -> TabTasksFragment.newInstance(currentTripId)
                     1 -> TabPackingFragment.newInstance(currentTripId)
-                    2 -> TabDocumentsFragment()
+                    2 -> TabDocumentsFragment.newInstance(currentTripId)
                     else -> TabTasksFragment.newInstance(currentTripId)
                 }
 
@@ -118,7 +181,11 @@ class EditTripFragment : Fragment(R.layout.fragment_edit_trip) {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
         })
     }
-
+    private fun setupShareButton(view: View) {
+        view.findViewById<ImageButton>(R.id.btnShareTrip).setOnClickListener {
+            showShareTripDialog()
+        }
+    }
     private fun setupBackButton(view: View) {
         view.findViewById<ImageButton>(R.id.btnBack).setOnClickListener {
             parentFragmentManager.popBackStack()

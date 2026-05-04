@@ -62,8 +62,7 @@ class TripsListFragment : Fragment() {
 
         listenerRegistration = FirebaseFirestore.getInstance()
             .collection("trips")
-            .whereEqualTo("ownerUid", uid)
-            .orderBy("createdAt", Query.Direction.DESCENDING)
+            .whereArrayContains("members", uid)
             .addSnapshotListener { snapshot, error ->
 
                 if (error != null) {
@@ -77,6 +76,7 @@ class TripsListFragment : Fragment() {
                         Trip(
                             id = doc.id,
                             ownerUid = doc.getString("ownerUid") ?: "",
+                            members = doc.get("members") as? List<String> ?: emptyList(),
                             destination = doc.getString("destination") ?: "",
                             startDateMillis = doc.getLong("startDateMillis") ?: 0L,
                             endDateMillis = doc.getLong("endDateMillis") ?: 0L
