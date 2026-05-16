@@ -1,0 +1,29 @@
+{
+  "project_info": {
+    "project_number": "108485441205",
+    "project_id": "tripset-fbc04",
+    "storage_bucket": "tripset-fbc04.firebasestorage.app"
+  },
+  "client": [
+    {
+      "client_info": {
+        "mobilesdk_app_id": "1:108485441205:android:edde0a588c0f12c07ff0fc",
+        "android_client_info": {
+          "package_name": "com.example.tripset"
+        }
+      },
+      "oauth_client": [],
+      "api_key": [
+        {
+          "current_key": "AIzaSyALqYIUYf4Bd1pgu3337HS_HPScOi7ok14"
+        }
+      ],
+      "services": {
+        "appinvite_service": {
+          "other_platform_oauth_client": []
+        }
+      }
+    }
+  ],
+  "configuration_version": "1"
+}
